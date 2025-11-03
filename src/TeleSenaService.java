@@ -32,12 +32,24 @@ public class TeleSenaService {
         int chave = 1;
 
         for (int i = 0; i < conjunto.length; i++) {
-            for (int j = 1; j < conjunto[i].length; j++) {
+            for (int j = 0; j < conjunto[i].length; j++) {
                 conjunto[i][j] = numerosSorteados.get(chave);
                 chave++;
             }
         }
 
         return conjunto;
+    }
+
+    public static String obterNomeAleatorio() {
+
+        int rand = (int) (Math.random() * Dados.nomes.split(";").length + 1);
+        return Dados.nomes.split(";")[rand];
+    }
+
+    public static String obterSobrenomeAleatorio() {
+
+        int rand = (int) (Math.random() * Dados.sobrenomes.split(";").length + 1);
+        return Dados.sobrenomes.split(";")[rand];
     }
 }
