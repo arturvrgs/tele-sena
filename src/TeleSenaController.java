@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +9,7 @@ public class TeleSenaController implements Runnable{
 
     private int qtdTelesenas;
     private Map<Integer, Integer> sorteio;
-    private Pessoa[] jogadores; //NUMERO ALEATORIO
+    private Pessoa[] jogadores;
 
     public TeleSenaController(TeleSenaService teleSenaService) {
 
@@ -54,12 +55,13 @@ public class TeleSenaController implements Runnable{
 
         for(Pessoa jogador : jogadores) {
 
-            int qtdAleatoriaTelesena = 1;
+            int qtdAleatoriaTelesena = (int) (Math.random() * 15 + 1);
+
             List<TeleSena> teleSenasDoJogador = new ArrayList<>();
 
             for (int i = 0; i < qtdAleatoriaTelesena; i++) {
 
-                int indiceAleatorioTelesena = 10;
+                int indiceAleatorioTelesena = (int) (Math.random() * 300);
 
                 teleSenasDoJogador.add(telesenas[indiceAleatorioTelesena]);
             }
@@ -74,10 +76,14 @@ public class TeleSenaController implements Runnable{
         gerarJogadores();
         comprarTeleSenas();
 
-        for(Pessoa jogador : jogadores) {
-            System.out.println(jogador.getNome() + " " + jogador.getTelesenas().getLast().getPreco());
-        }
+        for (Pessoa jogador : jogadores) {
+            System.out.println("Jogador: " + jogador.getNome());
 
+            for (TeleSena teleSena : jogador.getTelesenas()) {
+                System.out.println("Conjunto 1: " + Arrays.deepToString(teleSena.getConjunto1()));
+                System.out.println("Conjunto 2: " + Arrays.deepToString(teleSena.getConjunto2()));
+            }
+        }
 
     }
 
