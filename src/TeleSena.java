@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.List;
 
 public class TeleSena {
@@ -25,5 +26,15 @@ public class TeleSena {
 
     public int[][] getConjunto2() {
         return conjunto2;
+    }
+
+    public void exibirConjunto(int[][] conjunto) {
+        for (int i = 0; i < conjunto.length; i++) {
+            for (int j = 0; j < conjunto[i].length; j++) {
+                int num = conjunto[i][j];
+                System.out.print("[  " + num + (num >= 10 ? "  ]"  : "   ]") + " ");
+            }
+            System.out.println();
+        }
     }
 }

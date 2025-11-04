@@ -5,101 +5,59 @@ import java.util.Map;
 
 public class TeleSenaController implements Runnable{
 
-    private final TeleSenaService teleSenaService;
-
-    private int qtdTelesenas;
-    private Map<Integer, Integer> sorteio;
-    private Pessoa[] jogadores;
+    public final TeleSenaService teleSenaService;
 
     public TeleSenaController(TeleSenaService teleSenaService) {
-
         this.teleSenaService = teleSenaService;
-
-        qtdTelesenas = 300;
-        sorteio = teleSenaService.sortear();
-        jogadores = new Pessoa[20];
     }
 
-    public void gerarJogadores() {
+    public void mostrarSorteio(Map<Integer, Integer> sorteio) {
 
-        for (int i = 0; i < jogadores.length; i++) {
+        System.out.println("================= SORTEIO ==================");
+        for (int i = 1; i < sorteio.size(); i++) {
 
-            Pessoa pessoa = new Pessoa("aNÓnIMOs");
+            int num = sorteio.get(i);
 
-            if(jogadores[i] == null)
-                jogadores[i] = pessoa;
+            System.out.print("[  " + num + (num >= 10 ? "  ]"  : "   ]") + " ");
+
+            if(i % 5 == 0)
+                System.out.println();
+
         }
+        System.out.println("============================================");
     }
 
-    public TeleSena[] gerarTelesenas() {
-
-        TeleSena[] telesenas = new TeleSena[qtdTelesenas];
-
-        for (int i = 0; i < qtdTelesenas; i++) {
-
-            TeleSena teleSena = new TeleSena();
-
-            teleSena.setConjunto1(teleSenaService.gerarConjunto());
-            teleSena.setConjunto2(teleSenaService.gerarConjunto());
-
-            if(telesenas[i] == null)
-                telesenas[i] = teleSena;
-        }
-
-        return telesenas;
-    }
-
-    public void comprarTeleSenas() {
-
-        TeleSena[] telesenas = gerarTelesenas();
-
-        for(Pessoa jogador : jogadores) {
-
-            int qtdAleatoriaTelesena = (int) (Math.random() * 15 + 1);
-
-            List<TeleSena> teleSenasDoJogador = new ArrayList<>();
-
-            for (int i = 0; i < qtdAleatoriaTelesena; i++) {
-
-                int indiceAleatorioTelesena = (int) (Math.random() * 300);
-
-                teleSenasDoJogador.add(telesenas[indiceAleatorioTelesena]);
+    public void mostrarCartelasCompradas(Pessoa[] jogadores) {
+        for (Pessoa jogador : jogadores) {
+            System.out.println("TELESENAS DE " + jogador.getNome().toUpperCase() + " " + jogador.getSobrenome().toUpperCase());
+            System.out.println("============================================");
+            for (TeleSena telesena : jogador.getTelesenas()) {
+                System.out.println("============================================");
+                System.out.println("CONJUNTO 1");
+                telesena.exibirConjunto(telesena.getConjunto1());
+                System.out.println("--------------------------------------------");
+                System.out.println("CONJUNTO 2");
+                telesena.exibirConjunto(telesena.getConjunto2());
+                System.out.println("============================================");
+                System.out.println();
             }
-
-            jogador.setTelesenas(teleSenasDoJogador);
         }
     }
+
+
 
     @Override
     public void run() {
 
-        gerarJogadores();
-        comprarTeleSenas();
+        teleSenaService.gerarJogadores();
+        teleSenaService.comprarTeleSenas();
 
-        for (Pessoa jogador : jogadores) {
-            System.out.println("Jogador: " + jogador.getNome());
+        Map<Integer, Integer> sorteio = teleSenaService.sortear();
+        Pessoa[] jogadores = teleSenaService.getJogadores();
 
-            for (TeleSena teleSena : jogador.getTelesenas()) {
-                System.out.println("Conjunto 1: " + Arrays.deepToString(teleSena.getConjunto1()));
-                System.out.println("Conjunto 2: " + Arrays.deepToString(teleSena.getConjunto2()));
-            }
-        }
-
+        mostrarSorteio(sorteio);
+        mostrarCartelasCompradas(jogadores);
     }
 
-    public int getQtdTelesenas() {
-        return qtdTelesenas;
-    }
 
-    public void setQtdTelesenas(int qtdTelesenas) {
-        this.qtdTelesenas = qtdTelesenas;
-    }
-
-    public Map<Integer, Integer> getSorteio() {
-        return sorteio;
-    }
-
-    public void setSorteio(Map<Integer, Integer> sorteio) {
-        this.sorteio = sorteio;
-    }
 }

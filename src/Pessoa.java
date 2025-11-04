@@ -2,11 +2,21 @@ import java.util.List;
 
 public class Pessoa {
     private String nome;
+    private String sobrenome;
     private List<TeleSena> telesenas;
     private int valorPremiado;
 
-    public Pessoa(String nome) {
+    public Pessoa(String nome, String sobrenome) {
         this.nome = nome;
+        this.sobrenome = sobrenome;
+    }
+
+    public String getSobrenome() {
+        return sobrenome;
+    }
+
+    public void setSobrenome(String sobrenome) {
+        this.sobrenome = sobrenome;
     }
 
     public String getNome() {
