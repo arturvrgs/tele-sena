@@ -28,12 +28,21 @@ public class TeleSena {
         return conjunto2;
     }
 
-    public void exibirConjunto(int[][] conjunto) {
-        for (int i = 0; i < conjunto.length; i++) {
-            for (int j = 0; j < conjunto[i].length; j++) {
-                int num = conjunto[i][j];
-                System.out.print("[  " + num + (num >= 10 ? "  ]"  : "   ]") + " ");
+    public void exibirConjuntos(int[][] conjunto1, int[][] conjunto2) {
+        for (int i = 0; i < conjunto1.length; i++) {
+
+            for (int j = 0; j < conjunto1[i].length; j++) {
+                int numC1 = conjunto1[i][j];
+                System.out.print("[ " + numC1 + (numC1 >= 10 ? " ]"  : "  ]") + " ");
             }
+
+            System.out.print("      ");
+
+            for (int j = 0; j < conjunto2[i].length; j++) {
+                int numC2 = conjunto2[i][j];
+                System.out.print("[ " + numC2 + (numC2 >= 10 ? " ]"  : "  ]") + " ");
+            }
+
             System.out.println();
         }
     }

@@ -29,18 +29,27 @@ public class TeleSenaController implements Runnable{
 
     public void mostrarCartelasCompradas(Pessoa[] jogadores) {
         for (Pessoa jogador : jogadores) {
-            System.out.println("TELESENAS DE " + jogador.getNome().toUpperCase() + " " + jogador.getSobrenome().toUpperCase());
-            System.out.println("============================================");
             for (TeleSena telesena : jogador.getTelesenas()) {
-                System.out.println("============================================");
-                System.out.println("CONJUNTO 1");
-                telesena.exibirConjunto(telesena.getConjunto1());
-                System.out.println("--------------------------------------------");
-                System.out.println("CONJUNTO 2");
-                telesena.exibirConjunto(telesena.getConjunto2());
-                System.out.println("============================================");
-                System.out.println();
+
+                telesena.exibirConjuntos(telesena.getConjunto1(), telesena.getConjunto2());
+                System.out.println("===========================================================================");
             }
+        }
+    }
+
+    public void verificarGanhadores() {
+
+        List<Pessoa> ganhadores = teleSenaService.verificarGanhadores();
+
+        if(ganhadores.size() == 0) {
+            System.out.println("Não tem ganhadores");
+            return;
+        }
+
+        System.out.println("Ganhadores: ");
+
+        for (Pessoa ganhador : ganhadores) {
+            System.out.println("Ganhador: " + ganhador.getNome());
         }
     }
 
@@ -55,8 +64,9 @@ public class TeleSenaController implements Runnable{
         Map<Integer, Integer> sorteio = teleSenaService.sortear();
         Pessoa[] jogadores = teleSenaService.getJogadores();
 
-        mostrarSorteio(sorteio);
-        mostrarCartelasCompradas(jogadores);
+//        mostrarSorteio(sorteio);
+//        mostrarCartelasCompradas(jogadores);
+        verificarGanhadores();
     }
 
 

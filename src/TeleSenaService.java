@@ -64,7 +64,7 @@ public class TeleSenaService {
 
             Pessoa pessoa = new Pessoa(nome, sobrenome);
 
-            if(jogadores[i] == null)
+            if (jogadores[i] == null)
                 jogadores[i] = pessoa;
         }
     }
@@ -80,7 +80,7 @@ public class TeleSenaService {
             teleSena.setConjunto1(gerarConjunto());
             teleSena.setConjunto2(gerarConjunto());
 
-            if(telesenas[i] == null)
+            if (telesenas[i] == null)
                 telesenas[i] = teleSena;
         }
 
@@ -91,7 +91,7 @@ public class TeleSenaService {
 
         TeleSena[] telesenas = gerarTelesenas();
 
-        for(Pessoa jogador : jogadores) {
+        for (Pessoa jogador : jogadores) {
 
             int qtdAleatoriaTelesena = (int) (Math.random() * 15 + 1);
 
@@ -101,12 +101,62 @@ public class TeleSenaService {
 
                 int indiceAleatorioTelesena = (int) (Math.random() * 300);
 
-                teleSenasDoJogador.add(telesenas[indiceAleatorioTelesena]);
+                if (qtdTelesenas > 0) {
+                    teleSenasDoJogador.add(telesenas[indiceAleatorioTelesena]);
 
+                    qtdTelesenas--;
+                }
             }
 
             jogador.setTelesenas(teleSenasDoJogador);
         }
+    }
+
+    public List<Pessoa> verificarGanhadores() {
+
+        List<Pessoa> ganhadores = new ArrayList<>();
+
+        // Para cada jogador
+        for (Pessoa jogador : jogadores) {
+
+            // Para cada telesena do jogador
+            for (TeleSena teleSena : jogador.getTelesenas()) {
+
+                //Cria listas dos números dos conjuntos
+                List<Integer> numerosDoConjunto1 = new ArrayList<>();
+                List<Integer> numerosDoConjunto2 = new ArrayList<>();
+
+                // Percorre matriz do conjunto1 e adiciona a lista
+                for (int i = 0; i < teleSena.getConjunto1().length; i++) {
+                    for (int j = 0; j < teleSena.getConjunto1().length; j++) {
+                        numerosDoConjunto1.add(teleSena.getConjunto1()[i][j]);
+                    }
+                }
+
+                //Verifica se o conjunto1 tem os mesmos valores do sorteio
+                if(numerosDoConjunto1.containsAll(sorteio.values()))
+                {
+                   ganhadores.add(jogador);
+                }
+                else
+                {
+                    // Percorre matriz do conjunto2 e adiciona a lista
+                    for (int i = 0; i < teleSena.getConjunto2().length; i++) {
+                        for (int j = 0; j < teleSena.getConjunto2().length; j++) {
+                            numerosDoConjunto2.add(teleSena.getConjunto2()[i][j]);
+                        }
+                    }
+
+                    //Verifica se o conjunto2 tem os mesmos valores do sorteio
+                    if(numerosDoConjunto2.containsAll(sorteio.values()))
+                    {
+                        ganhadores.add(jogador);
+                    }
+                }
+            }
+        }
+
+        return ganhadores;
     }
 
     public static String obterNomeAleatorio() {
