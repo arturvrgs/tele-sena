@@ -4,6 +4,8 @@ import java.util.*;
 public class TeleSenaController implements Runnable{
 
     public final TeleSenaService teleSenaService;
+
+    // Seta velocidade padrão de visualização do jogo
     public int velocidade = 1;
 
     public TeleSenaController(TeleSenaService teleSenaService) {
@@ -17,8 +19,10 @@ public class TeleSenaController implements Runnable{
 
             int num = sorteio.get(i);
 
+            // Se o número tiver menos de 2 digitos ele da dois espaços
             System.out.print("[  " + num + (num >= 10 ? "  ]"  : "   ]") + " ");
 
+            // Pula linha a cada 5 iterações
             if(i % 5 == 0)
                 System.out.println();
 
@@ -26,6 +30,7 @@ public class TeleSenaController implements Runnable{
         System.out.println("===================================================");
     }
 
+    // Mostra todas as cartelas de todos os jogadores e avisa se a cartela ganhou
     public void mostrarCartelasCompradas(Pessoa[] jogadores) {
         try {
             for (Pessoa jogador : jogadores) {

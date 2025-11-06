@@ -2,15 +2,12 @@ import java.util.*;
 
 public class TeleSenaService {
 
-
     private Map<Integer, Integer> sorteio;
     private Pessoa[] jogadores;
-
 
     public Map<Integer, Integer> getSorteio() {
         return sorteio;
     }
-
 
     public TeleSenaService() {
 
@@ -25,30 +22,36 @@ public class TeleSenaService {
         int chave = 0;
 
         while (chave < 25) {
+            // Sorteia número de 1 a 60
             int sorteio = (int) (Math.random() * 60 + 1);
 
+            // Verifica se esse número já foi sorteado
             if (numerosSorteados.containsValue(sorteio))
                 continue;
 
             chave++;
+
+            //Adiciona número ao sorteio
             numerosSorteados.put(chave, sorteio);
         }
 
         return numerosSorteados;
     }
 
-    //public static adicionarNumero() {}
-
     public int[][] gerarConjunto() {
 
         Map<Integer, Integer> numerosSorteados = sortear();
 
+        // Cria conjunto 5x5
         int[][] conjunto = new int[5][5];
 
         int chave = 1;
 
+        // Percorre conjunto
         for (int i = 0; i < conjunto.length; i++) {
             for (int j = 0; j < conjunto[i].length; j++) {
+
+                // Adiciona valor no conjunto
                 conjunto[i][j] = numerosSorteados.get(chave);
                 chave++;
             }
@@ -95,19 +98,32 @@ public class TeleSenaService {
 
         for (Pessoa jogador : jogadores) {
 
+            // Seleciona quantidade aleatória tele sena para a pessoa da iteração
             int qtdAleatoriaTelesena = (int) (Math.random() * 15 + 1);
 
             List<TeleSena> teleSenasDoJogador = new ArrayList<>();
 
             for (int i = 0; i < qtdAleatoriaTelesena; i++) {
 
-                int indiceAleatorioTelesena = (int) (Math.random() * 300);
-
                 if (Dados.estoqueTelesenas > 0) {
+                    // Seleciona telesena aleatória do estoque
+                    int indiceAleatorioTelesena = (int) (Math.random() * 300);
+
+                    // Garante que tele sena não é null
+                    while (telesenas[indiceAleatorioTelesena] == null) {
+                        indiceAleatorioTelesena = (int) (Math.random() * 300);
+                    }
+
                     teleSenasDoJogador.add(telesenas[indiceAleatorioTelesena]);
 
+                    // Incrementa o valor da telesena no valor vendido
                     Dados.valorTotalVendido += telesenas[indiceAleatorioTelesena].getPreco();
+
+                    // Diminui estoque de tele sena
                     Dados.estoqueTelesenas--;
+
+                    // Não permite essa tele sena ser selecionada denovo
+                    telesenas[indiceAleatorioTelesena] = null;
                 }
             }
 
@@ -129,7 +145,7 @@ public class TeleSenaService {
                 // Para cada telesena do jogador
                 for (TeleSena teleSena : jogador.getTelesenas()) {
 
-                    //Cria listas dos números dos conjuntos
+                    // Cria listas dos números dos conjuntos
                     List<Integer> numerosDoConjunto1 = new ArrayList<>();
                     List<Integer> numerosDoConjunto2 = new ArrayList<>();
 
@@ -140,7 +156,7 @@ public class TeleSenaService {
                         }
                     }
 
-                    //Verifica se o conjunto1 tem os mesmos valores do sorteio
+                    // Verifica se o conjunto1 tem os mesmos valores do sorteio
                     if (sorteio.values().containsAll(numerosDoConjunto1)) {
 
                         teleSena.setVenceu(true);
@@ -167,21 +183,31 @@ public class TeleSenaService {
                 }
             }
 
+            // Se há ganhadores, para o loop
             if(!ganhadores.isEmpty()) {
                 break;
             }
+
+            // Caso não há ganhadores, sorteia novo número
             aumentarSorteio();
         }
 
+        // Percorre ganhadores
         for(Pessoa ganhador : ganhadores) {
+
+            // Garante que se o ganhador estiver mais de uma vez na lista, ele incrementa o valor do premio ao valor premiado
             double valorPorGanhador = (double) Dados.getValorDoPremio() / ganhadores.size();
             ganhador.setValorPremiado(ganhador.getValorPremiado() + valorPorGanhador);
         }
 
-        return ganhadores;
+
+        // Retorna ArrayList de ganhadores sem duplicatas.
+        return new ArrayList<>(new HashSet<>(ganhadores));
     }
 
     public void aumentarSorteio() {
+
+        // Adiciona número que ainda não existe no sorteio
         while (true) {
             int num = (int) (Math.random() * 60 + 1);
 

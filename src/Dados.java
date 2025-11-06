@@ -1,5 +1,3 @@
-import java.util.List;
-
 public class Dados {
 
     public static int estoqueTelesenas = 300;
