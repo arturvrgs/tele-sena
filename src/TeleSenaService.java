@@ -1,17 +1,19 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TeleSenaService {
 
-    private int qtdTelesenas;
+
     private Map<Integer, Integer> sorteio;
     private Pessoa[] jogadores;
 
+
+    public Map<Integer, Integer> getSorteio() {
+        return sorteio;
+    }
+
+
     public TeleSenaService() {
 
-        qtdTelesenas = 300;
         sorteio = sortear();
         jogadores = new Pessoa[20];
     }
@@ -22,7 +24,7 @@ public class TeleSenaService {
 
         int chave = 0;
 
-        while (chave <= 25) {
+        while (chave < 25) {
             int sorteio = (int) (Math.random() * 60 + 1);
 
             if (numerosSorteados.containsValue(sorteio))
@@ -71,9 +73,9 @@ public class TeleSenaService {
 
     public TeleSena[] gerarTelesenas() {
 
-        TeleSena[] telesenas = new TeleSena[qtdTelesenas];
+        TeleSena[] telesenas = new TeleSena[Dados.estoqueTelesenas];
 
-        for (int i = 0; i < qtdTelesenas; i++) {
+        for (int i = 0; i < Dados.estoqueTelesenas; i++) {
 
             TeleSena teleSena = new TeleSena();
 
@@ -101,10 +103,11 @@ public class TeleSenaService {
 
                 int indiceAleatorioTelesena = (int) (Math.random() * 300);
 
-                if (qtdTelesenas > 0) {
+                if (Dados.estoqueTelesenas > 0) {
                     teleSenasDoJogador.add(telesenas[indiceAleatorioTelesena]);
 
-                    qtdTelesenas--;
+                    Dados.valorTotalVendido += telesenas[indiceAleatorioTelesena].getPreco();
+                    Dados.estoqueTelesenas--;
                 }
             }
 
@@ -114,49 +117,79 @@ public class TeleSenaService {
 
     public List<Pessoa> verificarGanhadores() {
 
-        List<Pessoa> ganhadores = new ArrayList<>();
+        List<Pessoa> ganhadores;
 
-        // Para cada jogador
-        for (Pessoa jogador : jogadores) {
+        while(true) {
 
-            // Para cada telesena do jogador
-            for (TeleSena teleSena : jogador.getTelesenas()) {
+            ganhadores = new ArrayList<>();
 
-                //Cria listas dos números dos conjuntos
-                List<Integer> numerosDoConjunto1 = new ArrayList<>();
-                List<Integer> numerosDoConjunto2 = new ArrayList<>();
+            // Para cada jogador
+            for (Pessoa jogador : jogadores) {
 
-                // Percorre matriz do conjunto1 e adiciona a lista
-                for (int i = 0; i < teleSena.getConjunto1().length; i++) {
-                    for (int j = 0; j < teleSena.getConjunto1().length; j++) {
-                        numerosDoConjunto1.add(teleSena.getConjunto1()[i][j]);
-                    }
-                }
+                // Para cada telesena do jogador
+                for (TeleSena teleSena : jogador.getTelesenas()) {
 
-                //Verifica se o conjunto1 tem os mesmos valores do sorteio
-                if(numerosDoConjunto1.containsAll(sorteio.values()))
-                {
-                   ganhadores.add(jogador);
-                }
-                else
-                {
-                    // Percorre matriz do conjunto2 e adiciona a lista
-                    for (int i = 0; i < teleSena.getConjunto2().length; i++) {
-                        for (int j = 0; j < teleSena.getConjunto2().length; j++) {
-                            numerosDoConjunto2.add(teleSena.getConjunto2()[i][j]);
+                    //Cria listas dos números dos conjuntos
+                    List<Integer> numerosDoConjunto1 = new ArrayList<>();
+                    List<Integer> numerosDoConjunto2 = new ArrayList<>();
+
+                    // Percorre matriz do conjunto1 e adiciona a lista
+                    for (int i = 0; i < teleSena.getConjunto1().length; i++) {
+                        for (int j = 0; j < teleSena.getConjunto1().length; j++) {
+                            numerosDoConjunto1.add(teleSena.getConjunto1()[i][j]);
                         }
                     }
 
-                    //Verifica se o conjunto2 tem os mesmos valores do sorteio
-                    if(numerosDoConjunto2.containsAll(sorteio.values()))
-                    {
+                    //Verifica se o conjunto1 tem os mesmos valores do sorteio
+                    if (sorteio.values().containsAll(numerosDoConjunto1)) {
+
+                        teleSena.setVenceu(true);
+                        teleSena.setConjuntoVencedor("Conjunto 1");
+
                         ganhadores.add(jogador);
+                    } else {
+                        // Percorre matriz do conjunto2 e adiciona a lista
+                        for (int i = 0; i < teleSena.getConjunto2().length; i++) {
+                            for (int j = 0; j < teleSena.getConjunto2().length; j++) {
+                                numerosDoConjunto2.add(teleSena.getConjunto2()[i][j]);
+                            }
+                        }
+
+                        //Verifica se o conjunto2 tem os mesmos valores do sorteio
+                        if (sorteio.values().containsAll(numerosDoConjunto2)) {
+
+                            teleSena.setVenceu(true);
+                            teleSena.setConjuntoVencedor("Conjunto 2");
+
+                            ganhadores.add(jogador);
+                        }
                     }
                 }
             }
+
+            if(!ganhadores.isEmpty()) {
+                break;
+            }
+            aumentarSorteio();
+        }
+
+        for(Pessoa ganhador : ganhadores) {
+            double valorPorGanhador = (double) Dados.getValorDoPremio() / ganhadores.size();
+            ganhador.setValorPremiado(ganhador.getValorPremiado() + valorPorGanhador);
         }
 
         return ganhadores;
+    }
+
+    public void aumentarSorteio() {
+        while (true) {
+            int num = (int) (Math.random() * 60 + 1);
+
+            if(!sorteio.containsValue(num)) {
+                sorteio.put(sorteio.size() + 1, num);
+                break;
+            }
+        }
     }
 
     public static String obterNomeAleatorio() {
@@ -173,21 +206,5 @@ public class TeleSenaService {
 
     public Pessoa[] getJogadores() {
         return jogadores;
-    }
-
-    public int getQtdTelesenas() {
-        return qtdTelesenas;
-    }
-
-    public void setQtdTelesenas(int qtdTelesenas) {
-        this.qtdTelesenas = qtdTelesenas;
-    }
-
-    public Map<Integer, Integer> getSorteio() {
-        return sorteio;
-    }
-
-    public void setSorteio(Map<Integer, Integer> sorteio) {
-        this.sorteio = sorteio;
     }
 }

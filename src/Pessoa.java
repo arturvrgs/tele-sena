@@ -3,13 +3,17 @@ import java.util.List;
 public class Pessoa {
     private String nome;
     private String sobrenome;
+    private String nomeCompleto;
     private List<TeleSena> telesenas;
-    private int valorPremiado;
+    private double valorPremiado;
 
     public Pessoa(String nome, String sobrenome) {
         this.nome = nome;
         this.sobrenome = sobrenome;
+        this.nomeCompleto = nome + " " + sobrenome;
     }
+
+    public String getNomeCompleto() {return nomeCompleto;}
 
     public String getSobrenome() {
         return sobrenome;
@@ -35,11 +39,11 @@ public class Pessoa {
             this.telesenas = telesenas;
     }
 
-    public int getValorPremiado() {
+    public double getValorPremiado() {
         return valorPremiado;
     }
 
-    public void setValorPremiado(int valorPremiado) {
+    public void setValorPremiado(double valorPremiado) {
         this.valorPremiado = valorPremiado;
     }
 }

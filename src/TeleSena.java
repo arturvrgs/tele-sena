@@ -6,7 +6,24 @@ public class TeleSena {
     private final double preco = 10;
     private int[][] conjunto1;
     private int[][] conjunto2;
+    private boolean venceu = false;
+    private String conjuntoVencedor;
 
+    public String getConjuntoVencedor() {
+        return conjuntoVencedor;
+    }
+
+    public void setConjuntoVencedor(String conjuntoVencedor) {
+        this.conjuntoVencedor = conjuntoVencedor;
+    }
+
+    public boolean isVenceu() {
+        return venceu;
+    }
+
+    public void setVenceu(boolean venceu) {
+        this.venceu = venceu;
+    }
 
     public double getPreco() {
         return preco;
